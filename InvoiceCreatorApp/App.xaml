@@ -1,0 +1,10 @@
+﻿<Application x:Class="InvoiceCreatorApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:InvoiceCreatorApp"
+             StartupUri="Views/MainWindow.xaml">
+    <Application.Resources>
+        <!-- Resources -->
+    </Application.Resources>
+</Application>
+<!-- Treba vymenit toto : StartupUri="Views/MainWindow.xaml"   za toto:  Startup="ApplicationStart"  avsak potom neuvdis nahlad graficky-->
