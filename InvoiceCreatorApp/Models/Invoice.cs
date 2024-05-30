@@ -1,53 +1,61 @@
 ﻿using InvoiceCreatorApp.MVVM;
+using System;
 
 namespace InvoiceCreatorApp.Models
 {
     public class Invoice : ViewModelBase
     {
         private string _description;
-        private int _numberOfGoods;
-        private double _pricePerPiece;
+        private string _numberOfGoods;
+        private string _pricePerPiece;
         private string _customerName;
         private string _customerNumber;
+        private int _position;
+
+        public int Position 
+        {
+            get {  return _position; }
+            set {  _position = value; OnPropertyChanged(); }
+        }  
 
         public const double Tax = 0.2; // Tax 20%
         public string CompanyName { get; set; }
         public string CustomerName 
         {
             get {  return _customerName; }
-            set {  _customerName = value; OnPropertyChanged(nameof(CustomerName)); } 
+            set {  _customerName = value; OnPropertyChanged(); } 
         }
         public string CustomerNumber 
         {
             get { return _customerNumber; }
-            set { _customerNumber = value; OnPropertyChanged(nameof(CustomerNumber));}
+            set { _customerNumber = value; OnPropertyChanged();}
         }
         
         public string Description 
         {
             get {return _description; }
-            set {  _description = value; OnPropertyChanged(nameof(Description)); } 
+            set {  _description = value; OnPropertyChanged(); } 
         }
 
-        public int NumberOfGoods 
+        public string NumberOfGoods 
         {
             get { return _numberOfGoods; }
-            set { _numberOfGoods = value; OnPropertyChanged(nameof(NumberOfGoods)); OnPropertyChanged(nameof(NettoPrice)); }
+            set { _numberOfGoods = value; OnPropertyChanged(); OnPropertyChanged(nameof(NettoPrice)); }
         }
 
-        public double PricePerPiece 
+        public string PricePerPiece 
         {
             get { return _pricePerPiece;}
-            set {  _pricePerPiece = value; OnPropertyChanged(nameof(PricePerPiece)); OnPropertyChanged(nameof(NettoPrice)); }
+            set {  _pricePerPiece = value; OnPropertyChanged(); OnPropertyChanged(nameof(NettoPrice)); }
         }
 
-        public double CalculationTax() => (NumberOfGoods * PricePerPiece) * Tax;
+        public double CalculationTax() => (Int32.Parse(NumberOfGoods) * (Double.Parse(PricePerPiece)) * Tax);
 
-        public double CalculationFinalPrice() => (NumberOfGoods * PricePerPiece) * (1 + Tax);
+        public double CalculationFinalPrice() => (Int32.Parse(NumberOfGoods) * (Double.Parse(PricePerPiece)) * (1 + Tax));
 
-        public double TotalPrice() => NumberOfGoods * PricePerPiece;
+        public double TotalPrice() => (Int32.Parse(NumberOfGoods) * (Double.Parse(PricePerPiece)));
 
-        public double NettoPrice => NumberOfGoods * PricePerPiece;
+        public double NettoPrice => (Int32.Parse(NumberOfGoods) * (Double.Parse(PricePerPiece)));
 
         public Invoice() { }
 

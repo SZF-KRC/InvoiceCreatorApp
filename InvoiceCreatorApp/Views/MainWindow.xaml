@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:InvoiceCreatorApp.Views"
         xmlns:viewModel="clr-namespace:InvoiceCreatorApp.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="490" Width="800" Background="#FFC0E3EB">
+        Title="Invoice Creator App" Height="490" Width="800" Background="#FFC0E3EB">
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>
     </Window.DataContext>
@@ -99,7 +99,7 @@
             <TextBox x:Name="txtCustomerName" HorizontalAlignment="Left" Margin="275,14,0,0" Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
             <TextBox x:Name="txtCustomerNumber" HorizontalAlignment="Left" Margin="521,14,0,0" Text="{Binding CustomerNumber, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
             <TextBox x:Name="txtDescriptionOfGoods" HorizontalAlignment="Left" Margin="130,286,0,0" Text="{Binding DescriptionOfGoods, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="190"/>
-            <TextBox x:Name="txtPricePerPiece" HorizontalAlignment="Left" Margin="130,317,0,0" Text="{Binding PricePerPiece, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+            <TextBox x:Name="txtPricePerPiece" HorizontalAlignment="Left" Margin="130,317,0,0" Text="{Binding PricePerPiece, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
             <TextBox x:Name="txtNumberOfGoods" HorizontalAlignment="Left" Margin="130,348,0,0" Text="{Binding NumberOfGoods, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
             <Label x:Name="lblTotalTax" Content="Mehrwertsteuer:" HorizontalAlignment="Left" Margin="371,344,0,0" VerticalAlignment="Top"/>
             <Label x:Name="lblCompanyName" Content="Firmenname:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
@@ -111,13 +111,13 @@
             <TextBlock x:Name="txtbTotalTax" HorizontalAlignment="Left" Margin="479,349,0,0" TextWrapping="Wrap" Text="{Binding TotalTax}" VerticalAlignment="Top"/>
             <Label x:Name="lblFinalPrice" Content="Rechnungbetrag:" HorizontalAlignment="Left" Margin="366,370,0,0" VerticalAlignment="Top"/>
             <TextBlock x:Name="txtbFinalPrice" HorizontalAlignment="Left" Margin="479,375,0,0" TextWrapping="Wrap" Text="{Binding FinalPrice}" VerticalAlignment="Top"/>
-            <DataGrid ItemsSource="{Binding Invoices}" AutoGenerateColumns="False" Margin="11,52,133,157" SelectedItem="{Binding SelectedItem}" IsReadOnly="True">
+            <DataGrid ItemsSource="{Binding oneInvoice}" AutoGenerateColumns="False" Margin="130,41,133,168" SelectedItem="{Binding SelectedItem}" IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Pos." Binding="{Binding Pos}" Width="40"/>
+                    <DataGridTextColumn Header="Pos." Binding="{Binding Position}" Width="40*"/>
                     <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Width="200"/>
                     <DataGridTextColumn Header="Menge" Binding="{Binding NumberOfGoods, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
                     <DataGridTextColumn Header="Preis pro Stück" Binding="{Binding PricePerPiece, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                    <DataGridTextColumn Header="Gesamtpreis" Binding="{Binding NettoPrice, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+                    <DataGridTextColumn Header="Gesamtpreis" Binding="{Binding NettoPrice, UpdateSourceTrigger=PropertyChanged}" Width="120*"/>
                 </DataGrid.Columns>
             </DataGrid>
             <Label x:Name="lblNettoPreis" Content="Nettopreis:" HorizontalAlignment="Left" Margin="398,321,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.537,0.518"/>

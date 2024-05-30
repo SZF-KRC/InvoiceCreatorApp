@@ -1,28 +1,26 @@
 ﻿using InvoiceCreatorApp.Models;
 using InvoiceCreatorApp.MVVM;
-using Microsoft.Win32;
-using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using Xceed.Words.NET;
+using System.Text.RegularExpressions;
 
 namespace InvoiceCreatorApp.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public ObservableCollection<Invoice> Invoices { get; set; }
-        public InvoiceData invoiceData { get; set; }
+        public ObservableCollection<Invoice> oneInvoice { get; set; }
 
         private string _companyName;
         private string _customerNumber;
         private string _customerName;
         private string _descriptionOfGoods;
-        private int _numberOfGoods;
-        private double _pricePerPiece;
+        private string _numberOfGoods;
+        private string _pricePerPiece;
         private double _totalTax;
         private double _finalPrice;
+        private double _totalPrice;
+        private Invoice _selectedItem;
+
 
         public RelayCommand AddCommand => new RelayCommand(execute => AddInvoice(), canExecute => CanAddInvoice());
         public RelayCommand UpdateCommand => new RelayCommand(execute => UpdateInvoice(), canExecute => CanUpdateInvoice());
@@ -32,7 +30,7 @@ namespace InvoiceCreatorApp.ViewModels
 
         public MainWindowViewModel()
         {
-            Invoices = new ObservableCollection<Invoice>();
+            oneInvoice = new ObservableCollection<Invoice>();
         }
 
 
@@ -44,8 +42,7 @@ namespace InvoiceCreatorApp.ViewModels
                 if (_companyName != value)
                 {
                     _companyName = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(CompanyName));
+                    OnPropertyChanged();              
                 }
             }
         }
@@ -59,7 +56,6 @@ namespace InvoiceCreatorApp.ViewModels
                 {
                     _customerNumber = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(CustomerNumber));
                 }
             }
         }
@@ -73,7 +69,6 @@ namespace InvoiceCreatorApp.ViewModels
                 {
                     _customerName = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(CustomerName));
                 }
             }
         }
@@ -86,26 +81,24 @@ namespace InvoiceCreatorApp.ViewModels
                 {
                     _descriptionOfGoods = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(DescriptionOfGoods));
                 }
             }
         }
 
-        public int NumberOfGoods
+        public string NumberOfGoods
         {
-            get => (int)_numberOfGoods;
+            get => _numberOfGoods;
             set
             {
                 if (_numberOfGoods != value)
                 {
                     _numberOfGoods = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(NumberOfGoods));
                 }
             }
         }
 
-        public double PricePerPiece
+        public string PricePerPiece
         {
             get => _pricePerPiece;
             set
@@ -114,7 +107,6 @@ namespace InvoiceCreatorApp.ViewModels
                 {
                     _pricePerPiece = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(PricePerPiece));
                 }
             }
         }
@@ -129,7 +121,7 @@ namespace InvoiceCreatorApp.ViewModels
             }
         }
 
-        private double _totalPrice;
+        
         public double TotalPrice
         {
             get { return _totalPrice; }
@@ -150,37 +142,50 @@ namespace InvoiceCreatorApp.ViewModels
             }
         }
 
-        private Invoice _currentInvoice;
-        public Invoice CurrentInvoice
-        {
-            get { return _currentInvoice; }
-            set { _currentInvoice = value; OnPropertyChanged(nameof(CurrentInvoice)); }
-        }
-
-       
-
         private void SaveInvoice()
         {
             InvoiceDocumentCreator saveDocument = new InvoiceDocumentCreator();
-            saveDocument.SaveInvoice(Invoices, CompanyName, CustomerName, CustomerNumber);
-       
+            saveDocument.SaveInvoice(oneInvoice, CustomerName, CustomerNumber);
+
+            var invoiceData = new InvoiceData();
+            foreach (var invoice in oneInvoice)
+            {
+                InvoiceData.AddInvoice(invoice);
+            }
+
+            oneInvoice.Clear();
+            UpdateInvoiceTotals();
+
+
         }
 
         private bool CanSaveInvoice()
         {
             return !string.IsNullOrWhiteSpace(CustomerName) &&
-                  !string.IsNullOrWhiteSpace(CustomerNumber) && Invoices.Count != 0 ;
+                  !string.IsNullOrWhiteSpace(CustomerNumber) &&
+                  CustomerNumber.Length > 3 &&
+                  CustomerNumber.All(char.IsDigit) &&
+                  oneInvoice.Count != 0 ;
         }
 
 
 
         private bool CanUpdateInvoice()
         {
-            return !string.IsNullOrWhiteSpace(CustomerName) &&
-                  !string.IsNullOrWhiteSpace(DescriptionOfGoods) && NumberOfGoods > 0 && PricePerPiece > 0;
+            //return !string.IsNullOrWhiteSpace(CustomerName) &&
+            //      !string.IsNullOrWhiteSpace(DescriptionOfGoods) && 
+            //      !string.IsNullOrWhiteSpace(NumberOfGoods) && 
+            //      !string.IsNullOrWhiteSpace(PricePerPiece) &&
+            //      CustomerNumber.Length > 3 &&
+            //      CustomerNumber.All(char.IsDigit) &&
+            //      NumberOfGoods.Length > 0 &&
+            //      NumberOfGoods.All(char.IsDigit) &&
+            //      PricePerPiece.Length > 0 &&
+            //      PricePerPiece.All(char.IsDigit)&&
+            return CanAddInvoice() &&
+                  SelectedItem !=null;
         }
 
-        private Invoice _selectedItem;
         public Invoice SelectedItem
         {
             get { return _selectedItem; }
@@ -210,29 +215,37 @@ namespace InvoiceCreatorApp.ViewModels
                 SelectedItem.NumberOfGoods = NumberOfGoods;
                 SelectedItem.PricePerPiece = PricePerPiece;
 
-                OnPropertyChanged(nameof(Invoices));
+                OnPropertyChanged(nameof(oneInvoice));
                 SelectedItem = null;
-
-                TotalTax = Invoices.Sum(i => i.CalculationTax());
-                FinalPrice = Invoices.Sum(i => i.CalculationFinalPrice());
-                TotalPrice = Invoices.Sum(i => i.TotalPrice());
+                UpdateInvoiceTotals();       
 
                 DescriptionOfGoods = string.Empty;
-                NumberOfGoods = 0;
-                PricePerPiece = 0;
+                NumberOfGoods = string.Empty;
+                PricePerPiece = string.Empty;
                 OnPropertyChanged();
             }
             
         }
 
+        Regex isdouble = new Regex(@"^-?\d+(\,\d+)?$");
+
         private bool CanAddInvoice()
         {
             return  !string.IsNullOrWhiteSpace(CustomerName) &&
-                  !string.IsNullOrWhiteSpace(DescriptionOfGoods) && NumberOfGoods > 0 && PricePerPiece > 0;
+                  !string.IsNullOrWhiteSpace(DescriptionOfGoods) &&
+                  !string.IsNullOrWhiteSpace(CustomerNumber) &&
+                  CustomerNumber.Length > 3 &&
+                  CustomerNumber.All(char.IsDigit) &&
+                  !string.IsNullOrWhiteSpace(NumberOfGoods) &&
+                  NumberOfGoods.Length > 0 &&
+                  NumberOfGoods.All(char.IsDigit)&&
+                  !string.IsNullOrWhiteSpace(PricePerPiece)&&
+                  PricePerPiece.Length >0 &&
+                  isdouble.IsMatch(PricePerPiece);
+
+
+                
         }
-
-       
-
 
         private void AddInvoice()
         {
@@ -244,25 +257,36 @@ namespace InvoiceCreatorApp.ViewModels
                 Description = DescriptionOfGoods,
                 NumberOfGoods = NumberOfGoods,
                 PricePerPiece = PricePerPiece,
+                Position = oneInvoice.Count+1,
             };
-            Invoices.Add(invoice);
-            TotalTax = Invoices.Sum(i => i.CalculationTax());
-            FinalPrice = Invoices.Sum(i => i.CalculationFinalPrice());
-            TotalPrice = Invoices.Sum(i => i.TotalPrice());
+            oneInvoice.Add(invoice);
+            UpdateInvoiceTotals();
 
             DescriptionOfGoods = string.Empty;
-            NumberOfGoods = 0;
-            PricePerPiece = 0;
+            NumberOfGoods = string.Empty;
+            PricePerPiece = string.Empty;
             OnPropertyChanged();
         }
 
         private void DeleteInvoice()
         {
-            Invoices.Remove(SelectedItem);
-            TotalTax = Invoices.Sum(i => i.CalculationTax());
-            FinalPrice = Invoices.Sum(i => i.CalculationFinalPrice());
-            TotalPrice = Invoices.Sum(i => i.TotalPrice());
+            oneInvoice.Remove(SelectedItem);
+            UpdateInvoiceTotals();
+            UpdatePositions();
             OnPropertyChanged();         
+        }
+        private void UpdateInvoiceTotals()
+        {
+            TotalTax = oneInvoice.Sum(i => i.CalculationTax());
+            FinalPrice = oneInvoice.Sum(i => i.CalculationFinalPrice());
+            TotalPrice = oneInvoice.Sum(i => i.TotalPrice());
+        }
+        private void UpdatePositions()
+        {
+            for (int i = 0; i < oneInvoice.Count; i++)
+            {
+                oneInvoice[i].Position = i + 1;
+            }
         }
     }
 }
