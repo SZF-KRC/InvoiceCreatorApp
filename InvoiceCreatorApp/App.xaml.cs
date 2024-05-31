@@ -16,7 +16,7 @@ namespace InvoiceCreatorApp
             {
                 if (loginView.IsVisible == false && loginView.IsLoaded)
                 {
-                    var mainView = new MainWindow();
+                    var mainView = new InvoiceView();
                     mainView.Show();
                     loginView.Close();
                 }

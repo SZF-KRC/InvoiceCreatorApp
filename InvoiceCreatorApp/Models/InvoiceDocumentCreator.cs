@@ -10,7 +10,20 @@ namespace InvoiceCreatorApp.Models
 {
     public class InvoiceDocumentCreator
     {
-        public void SaveInvoice(ObservableCollection<Invoice> invoices, string customerName, string customerNumber)
+        /// <summary>
+        /// Speichert die Rechnung in einer DOCX-Datei
+        /// </summary>
+        /// <param name="invoices">Liste der Rechnungen</param>
+        /// <param name="customerName">Name des Kunden</param>
+        /// <param name="customerNumber">Kundennummer</param>
+        /// <param name="customerStreet">Straße des Kunden</param>
+        /// <param name="customerCity">Stadt des Kunden</param>
+        /// <param name="customerPostCode">Postleitzahl des Kunden</param>
+        /// <param name="companyName">Name des Unternehmens</param>
+        /// <param name="companyStreet">Straße des Unternehmens</param>
+        /// <param name="companyCity">Stadt des Unternehmens</param>
+        /// <param name="companyPostCode">Postleitzahl des Unternehmens</param>
+        public void SaveInvoice(ObservableCollection<Invoice> invoices, string customerName, string customerNumber, string customerStreet, string customerCity, string customerPostCode, string companyName, string companyStreet, string companyCity, string companyPostCode)
         {       
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "DOCX files (*.docx)|*.docx"; 
@@ -18,25 +31,30 @@ namespace InvoiceCreatorApp.Models
             {
                 using (var document = DocX.Create(saveFileDialog.FileName))
                 {
-                    // Hlavička spoločnosti
+
+                    // Firmenkopf
                     var header = document.InsertParagraph();
-                    header.AppendLine("WPF Bau GesmbH").FontSize(16).Bold();
-                    header.AppendLine("Fensterstraße 12").FontSize(12);
-                    header.AppendLine("8788 Guisberg").FontSize(12);
+                    header.AppendLine($"{companyName}").FontSize(16).Bold();
+                    header.AppendLine($"Straße: {companyStreet}").FontSize(12);
+                    header.AppendLine($"PLZ,Stadt: {companyPostCode}, {companyCity}").FontSize(12);
                     header.AppendLine("Phone: +43 660 111 222").FontSize(12);
                     header.AppendLine("Email: info@wpfbau.at").FontSize(12);
                     header.Alignment = Alignment.left;
 
-                    // Informácie o faktúre
+                    // Rechnungsinformationen
                     var invoiceInfo = document.InsertParagraph();
                     invoiceInfo.AppendLine("Rechnung").FontSize(18).Bold();
                     invoiceInfo.AppendLine($"Rechnungs-Nr.: {Guid.NewGuid()}").FontSize(12);
                     invoiceInfo.AppendLine($"Kunden-Nr.: KU-{customerNumber}").FontSize(12);
                     invoiceInfo.AppendLine($"Kundenname: {customerName}").FontSize(12);
+                    invoiceInfo.AppendLine($"Straße: {customerStreet}").FontSize(12);
+                    invoiceInfo.AppendLine($"PLZ,Stadt: {customerPostCode}, {customerCity}").FontSize(12);
                     invoiceInfo.AppendLine($"Datum: {DateTime.Now.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)}").FontSize(12);
                     invoiceInfo.Alignment = Alignment.left;
 
-                    // Tabuľka s položkami faktúry
+
+
+                    // Tabelle mit den Rechnungsposten
                     var table = document.AddTable(invoices.Count + 1, 6);
                     table.Design = TableDesign.LightShadingAccent1;
                     table.Alignment = Alignment.center;
@@ -58,7 +76,7 @@ namespace InvoiceCreatorApp.Models
                     }
 
                     document.InsertTable(table);
-                    // Celkové sumy
+                    // Gesamtsummen
                     var totals = document.InsertParagraph();
                     totals.AppendLine($"Summe Netto: {invoices.Sum(i => i.TotalPrice()).ToString("F2")} €").FontSize(12).Bold();
                     totals.AppendLine($"20% USt. auf {invoices.Sum(i => i.CalculationTax()).ToString("F2")} €").FontSize(12).Bold();

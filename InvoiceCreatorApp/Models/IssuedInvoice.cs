@@ -3,47 +3,22 @@ using System;
 
 namespace InvoiceCreatorApp.Models
 {
-    public class Invoice : ViewModelBase
+    public class IssuedInvoice :ViewModelBase
     {
         private string _description;
         private string _numberOfGoods;
         private string _pricePerPiece;
-        private int _position;
-
         private string _customerName;
-        private string _customerCity;
-        private string _customerStreet;   
-        private string _customerPostalCode;
         private string _customerNumber;
-
-
-        /// <summary>
-        /// Firmenname der Rechnung
-        /// </summary>
-        public string CompanyName { get; set; }
-
-        /// <summary>
-        /// Stadt des Unternehmens
-        /// </summary>
-        public string CompanyCity { get; set; }
-
-        /// <summary>
-        /// Straße des Unternehmens
-        /// </summary>
-        public string CompanyStreet { get; set; }
-
-        /// <summary>
-        /// Postleitzahl des Unternehmens
-        /// </summary>
-        public string CompanyPostalCode { get; set; }
+        private int _position;
 
         /// <summary>
         /// Position des Postens in der Rechnung
         /// </summary>
-        public int Position
+        public int Position 
         {
-            get { return _position; }
-            set { _position = value; OnPropertyChanged(); }
+            get {  return _position; }
+            set {  _position = value; OnPropertyChanged(); }
         }
 
         /// <summary>
@@ -52,63 +27,41 @@ namespace InvoiceCreatorApp.Models
         public const double Tax = 0.2; // Tax 20%
 
         /// <summary>
+        /// Firmenname der Rechnung
+        /// </summary>
+        public string CompanyName { get; set; }
+
+        /// <summary>
         /// Kundenname der Rechnung
         /// </summary>
-        public string CustomerName
+        public string CustomerName 
         {
-            get { return _customerName; }
-            set { _customerName = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Stadt des Kunden
-        /// </summary>
-        public string CustomerCity
-        {
-            get { return (_customerCity); }
-            set { _customerCity = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Straße des Kunden
-        /// </summary>
-        public string CustomerStreet
-        {
-            get { return _customerStreet; }
-            set { _customerStreet = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Postleitzahl des Kunden
-        /// </summary>
-        public string CustomerPostalCode
-        {
-            get { return _customerPostalCode; }
-            set { _customerPostalCode = value; OnPropertyChanged(); }
+            get {  return _customerName; }
+            set {  _customerName = value; OnPropertyChanged(); } 
         }
 
         /// <summary>
         /// Kundennummer der Rechnung
         /// </summary>
-        public string CustomerNumber
+        public string CustomerNumber 
         {
             get { return _customerNumber; }
-            set { _customerNumber = value; OnPropertyChanged(); }
+            set { _customerNumber = value; OnPropertyChanged();}
         }
 
         /// <summary>
         /// Beschreibung der Waren in der Rechnung
         /// </summary>
-        public string Description
+        public string Description 
         {
-            get { return _description; }
-            set { _description = value; OnPropertyChanged(); }
+            get {return _description; }
+            set {  _description = value; OnPropertyChanged(); } 
         }
 
         /// <summary>
         /// Anzahl der Waren in der Rechnung
         /// </summary>
-        public string NumberOfGoods
+        public string NumberOfGoods 
         {
             get { return _numberOfGoods; }
             set { _numberOfGoods = value; OnPropertyChanged(); OnPropertyChanged(nameof(NettoPrice)); }
@@ -117,10 +70,10 @@ namespace InvoiceCreatorApp.Models
         /// <summary>
         /// Preis pro Stück der Waren in der Rechnung
         /// </summary>
-        public string PricePerPiece
+        public string PricePerPiece 
         {
-            get { return _pricePerPiece; }
-            set { _pricePerPiece = value; OnPropertyChanged(); OnPropertyChanged(nameof(NettoPrice)); }
+            get { return _pricePerPiece;}
+            set {  _pricePerPiece = value; OnPropertyChanged(); OnPropertyChanged(nameof(NettoPrice)); }
         }
 
         /// <summary>
@@ -149,6 +102,9 @@ namespace InvoiceCreatorApp.Models
         /// <summary>
         /// Konstruktor für die Klasse Invoice
         /// </summary>
-        public Invoice() { }
+        public IssuedInvoice() { }
+
+
+
     }
 }
