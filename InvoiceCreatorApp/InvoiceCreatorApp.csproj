@@ -78,6 +78,9 @@
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MonthlyBalanceView.xaml.cs">
+      <DependentUpon>MonthlyBalanceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PasswordUserControlView.xaml.cs">
       <DependentUpon>PasswordUserControlView.xaml</DependentUpon>
     </Compile>
@@ -92,6 +95,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MonthlyBalanceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PasswordUserControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -102,7 +109,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\IssuedInvoice.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -35,6 +35,7 @@ namespace InvoiceCreatorApp.ViewModels
         private double _totalPrice;
 
         private Invoice _selectedItem;
+        private bool _isViewVisible = true;
 
         /// <summary>
         /// Befehl zum Hinzufügen eines Postens zur Rechnung
@@ -68,13 +69,19 @@ namespace InvoiceCreatorApp.ViewModels
             oneInvoice = new ObservableCollection<Invoice>();
         }
 
+        public bool IsViewVisible
+        {
+            get { return _isViewVisible; }
+            set { _isViewVisible = value; OnPropertyChanged(); }
+        }
+
         /// <summary>
         /// Firmenname der Rechnung
         /// </summary>
         public string CompanyName
         {
             get => _companyName;
-            set{if (_companyName != value){_companyName = value; OnPropertyChanged();}}
+            set{_companyName = value; OnPropertyChanged();}
         }
 
         /// <summary>
@@ -83,7 +90,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string CompanyStreet
         {
             get => _companyStreet;
-            set {if (_companyStreet != value) {_companyStreet = value; OnPropertyChanged();}}
+            set  {_companyStreet = value; OnPropertyChanged();}
         }
 
         /// <summary>
@@ -92,7 +99,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string CompanyCity
         {
             get => _companyCity;
-            set { if (_companyCity != value) { _companyCity = value; OnPropertyChanged(); } }
+            set { _companyCity = value; OnPropertyChanged(); } 
         }
 
         /// <summary>
@@ -101,7 +108,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string CompanyPostalCode
         {
             get => _companyPostalCode;
-            set { if (_companyPostalCode != value) { _companyPostalCode = value; OnPropertyChanged(); } }
+            set{ _companyPostalCode = value; OnPropertyChanged(); } 
         }
 
         /// <summary>
@@ -110,7 +117,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string CustomerNumber
         {
             get => _customerNumber;
-            set{if (_customerNumber != value){_customerNumber = value;OnPropertyChanged();}}
+            set{_customerNumber = value;OnPropertyChanged();}
         }
 
         /// <summary>
@@ -119,7 +126,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string CustomerName
         {
             get => _customerName;
-            set{if (_customerName != value){_customerName = value;OnPropertyChanged();}}
+            set{_customerName = value;OnPropertyChanged();}
         }
 
         /// <summary>
@@ -146,7 +153,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string CustomerPostalCode
         {
             get =>_customerPostalCode;
-            set { if (_customerPostalCode != value) { _customerPostalCode = value; OnPropertyChanged();} }
+            set { _customerPostalCode = value; OnPropertyChanged();} 
         }
 
         /// <summary>
@@ -155,7 +162,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string DescriptionOfGoods
         {
             get => _descriptionOfGoods;
-            set{if (_descriptionOfGoods != value){ _descriptionOfGoods = value; OnPropertyChanged(); }}
+            set{ _descriptionOfGoods = value; OnPropertyChanged(); }
         }
 
         /// <summary>
@@ -164,7 +171,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string NumberOfGoods
         {
             get => _numberOfGoods;
-            set{if (_numberOfGoods != value){ _numberOfGoods = value;OnPropertyChanged();}}
+            set{ _numberOfGoods = value;OnPropertyChanged();}
         }
 
         /// <summary>
@@ -173,7 +180,7 @@ namespace InvoiceCreatorApp.ViewModels
         public string PricePerPiece
         {
             get => _pricePerPiece;
-            set{if (_pricePerPiece != value){_pricePerPiece = value; OnPropertyChanged();}}
+            set{_pricePerPiece = value; OnPropertyChanged();}
         }
 
         /// <summary>
@@ -367,6 +374,11 @@ namespace InvoiceCreatorApp.ViewModels
             return CanAddInvoice() && SelectedItem != null;
         }
 
+        private bool CanMonthlyBalance()
+        {
+            return InvoiceData.GetInvoices().Count > 0;
+        }
+
         /// <summary>
         /// Ausgewähltes Rechnungsobjekt
         /// </summary>
@@ -394,13 +406,10 @@ namespace InvoiceCreatorApp.ViewModels
 
         private void MonthlyBalanceSheet()
         {
-            throw new NotImplementedException();
+            IsViewVisible = false;
         }
 
-        private bool CanMonthlyBalance()
-        {
-            throw new NotImplementedException();
-        }
+       
 
         /// <summary>
         /// Aktualisiert die Gesamtsummen der Rechnung
