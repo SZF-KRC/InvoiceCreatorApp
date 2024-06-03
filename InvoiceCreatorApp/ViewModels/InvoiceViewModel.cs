@@ -1,9 +1,13 @@
 ﻿using InvoiceCreatorApp.Models;
 using InvoiceCreatorApp.MVVM;
+using InvoiceCreatorApp.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Documents;
 
 namespace InvoiceCreatorApp.ViewModels
 {
@@ -12,6 +16,8 @@ namespace InvoiceCreatorApp.ViewModels
         Regex isdouble = new Regex(@"^-?\d+(\,\d+)?$");
         Regex isStreet = new Regex(@"^[A-Za-z]+(?:\s[A-Za-z0-9'_-]+)+$");
         public ObservableCollection<Invoice> oneInvoice { get; set; }
+       
+
 
         private string _companyName = "WPF Bau GesmbH";
         private string _companyCity = "Guisberg";
@@ -35,7 +41,7 @@ namespace InvoiceCreatorApp.ViewModels
         private double _totalPrice;
 
         private Invoice _selectedItem;
-        private bool _isViewVisible = true;
+
 
         /// <summary>
         /// Befehl zum Hinzufügen eines Postens zur Rechnung
@@ -67,12 +73,6 @@ namespace InvoiceCreatorApp.ViewModels
         public InvoiceViewModel()
         {
             oneInvoice = new ObservableCollection<Invoice>();
-        }
-
-        public bool IsViewVisible
-        {
-            get { return _isViewVisible; }
-            set { _isViewVisible = value; OnPropertyChanged(); }
         }
 
         /// <summary>
@@ -290,13 +290,25 @@ namespace InvoiceCreatorApp.ViewModels
         /// </summary>
         private void SaveInvoice()
         {
+            string invoiceNumber = Guid.NewGuid().ToString();
+            string currentTime = DateTime.Now.ToString("dd.MM.yyyy"); //CultureInfo.InvariantCulture
             InvoiceDocumentCreator saveDocument = new InvoiceDocumentCreator();// Erstellt ein neues Dokument für die Rechnung
-            saveDocument.SaveInvoice(oneInvoice, CustomerName, CustomerNumber, CustomerStreet, CustomerCity, CustomerPostalCode, CompanyName, CompanyStreet, CompanyCity, CompanyPostalCode);// Speichert das Rechnungsdokument
-            var invoiceData = new InvoiceData();// Erstellt eine neue Instanz von InvoiceData
-            foreach (var invoice in oneInvoice)// Fügt jede Rechnung in der Sammlung oneInvoice zu invoiceData hinzu
+            saveDocument.SaveInvoice(oneInvoice, invoiceNumber,currentTime, CustomerName, CustomerNumber, CustomerStreet, CustomerCity, CustomerPostalCode, CompanyName, CompanyStreet, CompanyCity, CompanyPostalCode);// Speichert das Rechnungsdokument
+
+            var finalInvoice = new FinalInvoice
             {
-                InvoiceData.AddInvoice(invoice);
-            }
+                CustomerName = CustomerName,
+                CustomerNum = CustomerNumber,
+                InvoiceNum = invoiceNumber,
+                CurrentTime = currentTime,
+                Tax = _totalTax,
+                Netto = _totalPrice,
+                FinalPrice = _finalPrice,
+                Items = new ObservableCollection<Invoice>(oneInvoice)
+            };
+
+            InvoiceData.AddInvoice(finalInvoice);
+
             oneInvoice.Clear();// Löscht alle Posten aus der aktuellen Rechnungssammlung
             UpdateInvoiceTotals();// Aktualisiert die Gesamtsummen der Rechnung
         }
@@ -376,6 +388,7 @@ namespace InvoiceCreatorApp.ViewModels
 
         private bool CanMonthlyBalance()
         {
+
             return InvoiceData.GetInvoices().Count > 0;
         }
 
@@ -406,7 +419,9 @@ namespace InvoiceCreatorApp.ViewModels
 
         private void MonthlyBalanceSheet()
         {
-            IsViewVisible = false;
+            MonthlyBalanceView monthlyBalanceView = new MonthlyBalanceView();
+            monthlyBalanceView.DataContext = new MonthlyBalanceViewModel();
+            monthlyBalanceView.Show();
         }
 
        

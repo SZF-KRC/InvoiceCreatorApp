@@ -23,7 +23,7 @@ namespace InvoiceCreatorApp.Models
         /// <param name="companyStreet">Straße des Unternehmens</param>
         /// <param name="companyCity">Stadt des Unternehmens</param>
         /// <param name="companyPostCode">Postleitzahl des Unternehmens</param>
-        public void SaveInvoice(ObservableCollection<Invoice> invoices, string customerName, string customerNumber, string customerStreet, string customerCity, string customerPostCode, string companyName, string companyStreet, string companyCity, string companyPostCode)
+        public void SaveInvoice(ObservableCollection<Invoice> invoices, string invoiceNumber,string currentTime, string customerName, string customerNumber, string customerStreet, string customerCity, string customerPostCode, string companyName, string companyStreet, string companyCity, string companyPostCode)
         {       
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "DOCX files (*.docx)|*.docx"; 
@@ -44,12 +44,12 @@ namespace InvoiceCreatorApp.Models
                     // Rechnungsinformationen
                     var invoiceInfo = document.InsertParagraph();
                     invoiceInfo.AppendLine("Rechnung").FontSize(18).Bold();
-                    invoiceInfo.AppendLine($"Rechnungs-Nr.: {Guid.NewGuid()}").FontSize(12);
+                    invoiceInfo.AppendLine($"Rechnungs-Nr.: {invoiceNumber}").FontSize(12);
                     invoiceInfo.AppendLine($"Kunden-Nr.: KU-{customerNumber}").FontSize(12);
                     invoiceInfo.AppendLine($"Kundenname: {customerName}").FontSize(12);
                     invoiceInfo.AppendLine($"Straße: {customerStreet}").FontSize(12);
                     invoiceInfo.AppendLine($"PLZ,Stadt: {customerPostCode}, {customerCity}").FontSize(12);
-                    invoiceInfo.AppendLine($"Datum: {DateTime.Now.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)}").FontSize(12);
+                    invoiceInfo.AppendLine($"Datum: {currentTime}").FontSize(12);
                     invoiceInfo.Alignment = Alignment.left;
 
 

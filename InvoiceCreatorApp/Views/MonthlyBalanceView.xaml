@@ -4,10 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InvoiceCreatorApp.Views"
+        xmlns:viewModel="clr-namespace:InvoiceCreatorApp.ViewModels"
         mc:Ignorable="d"
         Title="MonthlyBalanceView" Height="450" Width="800" Background="#FF9BC6D7"
         ResizeMode="NoResize">
 
+    <Window.DataContext>
+        <viewModel:MonthlyBalanceViewModel/>
+    </Window.DataContext>
 
     <Window.Resources>
 
@@ -81,18 +85,19 @@
     </Window.Resources>
 
     <Grid>
-        <Grid HorizontalAlignment="Left" Height="330" Margin="287,94,0,0" VerticalAlignment="Top" Width="503">
-            <TabControl>
+        <Grid HorizontalAlignment="Left" Height="330" Margin="255,94,0,0" VerticalAlignment="Top" Width="503">
+            <TabControl Margin="0,0,0,78">
                 <TabItem Header="Einnahmen">
-                    <Grid Background="#FFE5E5E5">
-                        <DataGrid d:ItemsSource="{Binding InvoiceData.invoices}">
+                    <Grid Background="#FFE5E5E5" Height="273">
+                        <DataGrid d:ItemsSource="{Binding Invoices}" Margin="0,0,0,45">
 
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Pos." Width="45" CanUserResize="False"/>
-                                <DataGridTextColumn Header="Bezeichnung" Width="200" CanUserResize="False"/>
-                                <DataGridTextColumn Header="Menge" Width="50" CanUserResize="False"/>
-                                <DataGridTextColumn Header="Preis pro Stück" Width="90" CanUserResize="False"/>
-                                <DataGridTextColumn Header="Gesamtpreis" Width="120*" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Re.Nr." Width="45" Binding="{Binding InvoiceNum}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Datum" Width="60" Binding="{Binding CurrentTime}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Kunde" Binding="{Binding CustomerName}" Width="90" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Netto" Width="90" Binding="{Binding Netto}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="USt." Width="45" Binding="{Binding Tax}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Betrag" Width="120*" Binding="{Binding FinalPrice}" CanUserResize="False"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -110,10 +115,16 @@
         </Grid>
         <DatePicker HorizontalAlignment="Left" Margin="364,30,0,0" VerticalAlignment="Top" Name="von" SelectedDate="01.01.2024"/>
         <DatePicker HorizontalAlignment="Left" Margin="538,30,0,0" VerticalAlignment="Top" Name="bis" SelectedDate="01.02.2024"/>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Back" Margin="50,350,0,0" Style="{StaticResource ButtonStyle}">
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Back" Margin="50,350,0,0" Command="{Binding OpenInvoiceCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource ButtonStyle}">
             <Button.RenderTransform>
                 <MatrixTransform/>
             </Button.RenderTransform>
         </Button>
+        <TextBlock x:Name="txtbIncome" HorizontalAlignment="Left" Margin="72,127,0,0" TextWrapping="Wrap" Text="Text"  VerticalAlignment="Top" Width="96"/>
+        <TextBlock x:Name="txtbOutgoings" HorizontalAlignment="Left" Margin="72,201,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="97"/>
+        <Label x:Name="lblIncome" Content="Einnahmen:" HorizontalAlignment="Left" Margin="60,96,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label x:Name="lblOutgoings" Content="Ausgaben:" HorizontalAlignment="Left" Margin="60,170,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label x:Name="lblFinalBalance" Content="Endgültige Bilanz:" HorizontalAlignment="Left" Margin="60,233,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock HorizontalAlignment="Left" Margin="72,264,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="97"/>
     </Grid>
 </Window>

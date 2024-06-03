@@ -70,11 +70,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\FinalInvoice.cs" />
     <Compile Include="Models\InvoiceData.cs" />
     <Compile Include="Models\InvoiceDocumentCreator.cs" />
     <Compile Include="Models\Invoice.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\InvoiceViewModel.cs" />
+    <Compile Include="ViewModels\MonthlyBalanceViewModel.cs" />
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>

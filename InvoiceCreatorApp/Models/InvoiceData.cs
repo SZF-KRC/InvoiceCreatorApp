@@ -1,32 +1,19 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace InvoiceCreatorApp.Models
 {
     public class InvoiceData
     {
-        private static ObservableCollection<Invoice> invoices = new ObservableCollection<Invoice>();
+        private static List<FinalInvoice> _invoices = new List<FinalInvoice>();
 
-        /// <summary>
-        /// Liste der Rechnungen
-        /// </summary>
-        public static ObservableCollection<Invoice> Invoices => invoices;
-
-        /// <summary>
-        /// Fügt eine neue Rechnung zur Liste hinzu
-        /// </summary>
-        /// <param name="invoice">Die hinzuzufügende Rechnung</param>
-        public static void AddInvoice(Invoice invoice)
+        public static void AddInvoice(FinalInvoice invoice)
         {
-            invoices.Add(invoice);
+            _invoices.Add(invoice);
         }
 
-        /// <summary>
-        /// Gibt die Liste der Rechnungen zurück
-        /// </summary>
-        /// <returns>Liste der Rechnungen</returns>
-        public static ObservableCollection<Invoice> GetInvoices()
+        public static List<FinalInvoice> GetInvoices()
         {
-            return invoices;
+            return _invoices;
         }
     }
 }

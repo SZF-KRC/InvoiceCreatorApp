@@ -19,15 +19,6 @@ namespace InvoiceCreatorApp
                     var mainView = new InvoiceView();
                     mainView.Show();
                     loginView.Close();
-                    mainView.IsVisibleChanged += (x, dd) =>
-                    {
-                        if (mainView.IsVisible == false && mainView.IsLoaded)
-                        {
-                            var balance = new MonthlyBalanceView();
-                            balance.Show();
-                            mainView.Close();
-                        }
-                    };
                 }
             };
         }
