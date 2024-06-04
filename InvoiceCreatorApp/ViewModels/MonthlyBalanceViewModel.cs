@@ -1,5 +1,7 @@
 ﻿using InvoiceCreatorApp.Models;
 using InvoiceCreatorApp.MVVM;
+using System;
+using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -7,6 +9,9 @@ namespace InvoiceCreatorApp.ViewModels
 {
     public class MonthlyBalanceViewModel : ViewModelBase
     {
+        private ObservableCollection<Invoice> _invoices = new ObservableCollection<Invoice>(InvoiceData.GetInvoices());
+        
+
         public RelayCommand OpenInvoiceCommand => new RelayCommand(execute => CloseMonthlyBalance(execute), canExecute => CanCloseBalance());
 
         private bool CanCloseBalance()
@@ -22,24 +27,48 @@ namespace InvoiceCreatorApp.ViewModels
                 window.Close();
             }
         }
-
-        private ObservableCollection<FinalInvoice> _invoices;
-
-        public ObservableCollection<FinalInvoice> Invoices
+     
+        public ObservableCollection<Invoice> Invoices
         {
-            get { return _invoices; }
+            get => _invoices; 
             set { _invoices = value; OnPropertyChanged(); }
         }
 
-        public MonthlyBalanceViewModel()
+
+        private DateTime _startDate ;
+        private DateTime _endDate = DateTime.Today ;
+        public DateTime SelectedDateTimeStartDate 
         {
-            LoadInvoices();
+            get => _startDate; 
+            set 
+            { 
+                if( value <= _endDate )
+                {
+                    _startDate = value;
+                }
+                else
+                {
+                    _endDate =value;
+                }
+               OnPropertyChanged();
+                
+            }
         }
 
-        private void LoadInvoices()
+        public DateTime SelectedDateTimeEndDate
         {
-            var invoices = InvoiceData.GetInvoices();
-            Invoices = new ObservableCollection<FinalInvoice>(invoices);
+            get => _endDate;
+            set
+            {
+                if( value >= _startDate)
+                {
+                    _endDate = value;
+                }else
+                {
+                    _startDate = value;
+                }
+                OnPropertyChanged();
+            }
         }
     }
 }

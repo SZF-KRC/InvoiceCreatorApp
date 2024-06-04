@@ -84,6 +84,7 @@
             </Setter>
         </Style>
     </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -97,33 +98,33 @@
 
         <!-- Main content in the second row -->
         <Grid Grid.Row="1">
-            <TextBlock x:Name="txtBlockCompanyName" HorizontalAlignment="Left" Margin="93,38,0,0" TextWrapping="Wrap" Text="{Binding CompanyName}" VerticalAlignment="Top"/>
-            <TextBlock x:Name="txtbStreetInvoiceIssuer" HorizontalAlignment="Left" Margin="93,64,0,0" TextWrapping="Wrap" Text="{Binding CompanyStreet}" VerticalAlignment="Top" Width="183"/>
-            <TextBlock x:Name="txtbTownInvoiceIssuer" HorizontalAlignment="Left" Margin="93,85,0,0" TextWrapping="Wrap" Text="{Binding CompanyCity}" VerticalAlignment="Top" Width="183"/>
-            <TextBlock x:Name="txtbPostalCodeInvoiceIssuer" HorizontalAlignment="Left" Margin="93,106,0,0" TextWrapping="Wrap" Text="{Binding CompanyPostalCode}" VerticalAlignment="Top" Width="183"/>
-            <TextBlock x:Name="txtbNettoPreis" HorizontalAlignment="Left" Margin="646,287,0,0" TextWrapping="Wrap" Text="{Binding TotalPrice}"  VerticalAlignment="Top" Width="86"/>
+            <TextBlock x:Name="txtBlockCompanyName" HorizontalAlignment="Left" Margin="93,38,0,0" TextWrapping="Wrap" Text="{Binding Company.CompanyName}" VerticalAlignment="Top"/>
+            <TextBlock x:Name="txtbStreetInvoiceIssuer" HorizontalAlignment="Left" Margin="93,64,0,0" TextWrapping="Wrap" Text="{Binding Company.CompanyStreet}" VerticalAlignment="Top" Width="183"/>
+            <TextBlock x:Name="txtbTownInvoiceIssuer" HorizontalAlignment="Left" Margin="93,85,0,0" TextWrapping="Wrap" Text="{Binding Company.CompanyCity}" VerticalAlignment="Top" Width="183"/>
+            <TextBlock x:Name="txtbPostalCodeInvoiceIssuer" HorizontalAlignment="Left" Margin="93,106,0,0" TextWrapping="Wrap" Text="{Binding Company.CompanyPostCode}" VerticalAlignment="Top" Width="183"/>
+            <TextBlock x:Name="txtbNettoPreis" HorizontalAlignment="Left" Margin="646,287,0,0" TextWrapping="Wrap" Text="{Binding SubTotal}"  VerticalAlignment="Top" Width="86"/>
             <TextBlock HorizontalAlignment="Left" Margin="737,286,0,0" TextWrapping="Wrap" Text="€" VerticalAlignment="Top"/>
             <TextBlock HorizontalAlignment="Left" Margin="737,306,0,0" TextWrapping="Wrap" Text="€" VerticalAlignment="Top"/>
             <TextBlock HorizontalAlignment="Left" Margin="737,326,0,0" TextWrapping="Wrap" Text="€" VerticalAlignment="Top" RenderTransformOrigin="0.68,0.541"/>
-            <TextBlock x:Name="txtbTotalTax" HorizontalAlignment="Left" Margin="646,306,0,0" TextWrapping="Wrap" Text="{Binding TotalTax}" VerticalAlignment="Top" Width="86"/>
-            <TextBlock x:Name="txtbFinalPrice" HorizontalAlignment="Left" Margin="646,326,0,0" TextWrapping="Wrap" Text="{Binding FinalPrice}" VerticalAlignment="Top" Width="80"/>
+            <TextBlock x:Name="txtbTotalTax" HorizontalAlignment="Left" Margin="646,306,0,0" TextWrapping="Wrap" Text="{Binding VAT}" VerticalAlignment="Top" Width="86"/>
+            <TextBlock x:Name="txtbFinalPrice" HorizontalAlignment="Left" Margin="646,326,0,0" TextWrapping="Wrap" Text="{Binding Total}" VerticalAlignment="Top" Width="80"/>
 
-            <TextBox x:Name="txtCustomerName" HorizontalAlignment="Left" Margin="113,229,0,0" Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Der Kundenname muss länger als drei Zeichen sein."/>
-            <TextBox x:Name="txtStreetInvoiceRecipient" HorizontalAlignment="Left" Margin="113,252,0,0" Text="{Binding CustomerStreet, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Straße muss länger als drei Zeichen sein und darf nur Buchstaben, Zahlen und bestimmte Sonderzeichen (-, _, ') enthalten."/>
-            <TextBox x:Name="txtCityInvoiceRecipient" HorizontalAlignment="Left" Margin="113,278,0,0" Text="{Binding CustomerCity, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Stadt muss länger als drei Zeichen sein und darf nur Buchstaben enthalten."/>
-            <TextBox x:Name="txtPostCodeInvoiceRecipient" HorizontalAlignment="Left" Margin="113,304,0,0" Text="{Binding CustomerPostalCode, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Postleitzahl muss länger als drei Zeichen sein und darf nur Zahlen enthalten."/>
-            <TextBox x:Name="txtCustomerNumber" HorizontalAlignment="Left" Margin="113,330,0,0" Text="{Binding CustomerNumber, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Kundennummer muss länger als drei Zeichen sein und darf nur Zahlen enthalten."/>
-            <TextBox x:Name="txtDescriptionOfGoods" HorizontalAlignment="Left" Margin="439,216,0,0" Text="{Binding DescriptionOfGoods, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" ToolTip="Die Beschreibung der Waren muss länger als zwei Zeichen sein."/>
-            <TextBox x:Name="txtPricePerPiece" HorizontalAlignment="Left" Margin="439,238,0,0" Text="{Binding PricePerPiece, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" UndoLimit="10" ToolTip="Der Preis pro Stück muss eine gültige Zahl sein, einschließlich Dezimalzahlen mit einem Komma."/>
-            <TextBox x:Name="txtNumberOfGoods" HorizontalAlignment="Left" Margin="439,260,0,0" Text="{Binding NumberOfGoods, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" UndoLimit="1000" ToolTip="Die Anzahl der Waren muss eine gültige Zahl sein und weniger als 3 Zeichen lang sein."/>
+            <TextBox x:Name="txtCustomerName" HorizontalAlignment="Left" Margin="113,229,0,0" Text="{Binding Customer.CustomerName, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Der Kundenname muss länger als drei Zeichen sein."/>
+            <TextBox x:Name="txtStreetInvoiceRecipient" HorizontalAlignment="Left" Margin="113,252,0,0" Text="{Binding Customer.CustomerStreet, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Straße muss länger als drei Zeichen sein und darf nur Buchstaben, Zahlen und bestimmte Sonderzeichen (-, _, ') enthalten."/>
+            <TextBox x:Name="txtCityInvoiceRecipient" HorizontalAlignment="Left" Margin="113,278,0,0" Text="{Binding Customer.CustomerCity, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Stadt muss länger als drei Zeichen sein und darf nur Buchstaben enthalten."/>
+            <TextBox x:Name="txtPostCodeInvoiceRecipient" HorizontalAlignment="Left" Margin="113,304,0,0" Text="{Binding Customer.CustomerPostCode, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Postleitzahl muss länger als drei Zeichen sein und darf nur Zahlen enthalten."/>
+            <TextBox x:Name="txtCustomerNumber" HorizontalAlignment="Left" Margin="113,330,0,0" Text="{Binding Customer.CustomerNumber, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="206" ToolTip="Die Kundennummer muss länger als drei Zeichen sein und darf nur Zahlen enthalten."/>
+            <TextBox x:Name="txtDescriptionOfGoods" HorizontalAlignment="Left" Margin="439,216,0,0" Text="{Binding NewProduct.Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" ToolTip="Die Beschreibung der Waren muss länger als zwei Zeichen sein."/>
+            <TextBox x:Name="txtPricePerPiece" HorizontalAlignment="Left" Margin="439,238,0,0" Text="{Binding NewProduct.PricePerUnit, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" UndoLimit="10" ToolTip="Der Preis pro Stück muss eine gültige Zahl sein, einschließlich Dezimalzahlen mit einem Komma."/>
+            <TextBox x:Name="txtNumberOfGoods" HorizontalAlignment="Left" Margin="439,260,0,0" Text="{Binding NewProduct.Quantity, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" UndoLimit="1000" ToolTip="Die Anzahl der Waren muss eine gültige Zahl sein und weniger als 3 Zeichen lang sein."/>
 
-            <DataGrid ItemsSource="{Binding oneInvoice}" AutoGenerateColumns="False" Margin="327,10,10,187" SelectedItem="{Binding SelectedItem}" IsReadOnly="True">
+            <DataGrid ItemsSource="{Binding Products}" AutoGenerateColumns="False" Margin="327,10,10,187" SelectedItem="{Binding SelectedItem}" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Pos." Binding="{Binding Position}" Width="45*" CanUserResize="False"/>
                     <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" CanUserResize="False"/>
-                    <DataGridTextColumn Header="Menge" Binding="{Binding NumberOfGoods, UpdateSourceTrigger=PropertyChanged}" Width="50" CanUserResize="False"/>
-                    <DataGridTextColumn Header="Preis pro Stück" Binding="{Binding PricePerPiece, UpdateSourceTrigger=PropertyChanged}" Width="90" CanUserResize="False"/>
-                    <DataGridTextColumn Header="Gesamtpreis" Binding="{Binding NettoPrice, UpdateSourceTrigger=PropertyChanged}" Width="120*" CanUserResize="False"/>
+                    <DataGridTextColumn Header="Menge" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Width="50" CanUserResize="False"/>
+                    <DataGridTextColumn Header="Preis pro Stück" Binding="{Binding PricePerUnit, UpdateSourceTrigger=PropertyChanged}" Width="90" CanUserResize="False"/>
+                    <DataGridTextColumn Header="Gesamtpreis" Binding="{Binding TotalPrice, UpdateSourceTrigger=PropertyChanged}" Width="120*" CanUserResize="False"/>
                 </DataGrid.Columns>
             </DataGrid>
 

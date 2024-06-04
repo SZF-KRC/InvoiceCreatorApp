@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace InvoiceCreatorApp.Views
@@ -13,7 +14,7 @@ namespace InvoiceCreatorApp.Views
         public string Password
         {
             get { return (string)GetValue(PasswordProperty); }
-            set { SetValue(PasswordProperty, value); }
+            set { SetValue(PasswordProperty, value);}
         }
 
         // Using a DependencyProperty as the backing store for Password.  This enables animation, styling, binding, etc...
@@ -24,7 +25,7 @@ namespace InvoiceCreatorApp.Views
         public PasswordUserControlView()
         {
             InitializeComponent();
-        }
+        }   
 
         private void passwordBoxPasswordChanged(object sender, RoutedEventArgs e)
         {

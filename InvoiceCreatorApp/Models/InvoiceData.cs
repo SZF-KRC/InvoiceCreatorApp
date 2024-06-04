@@ -4,16 +4,13 @@ namespace InvoiceCreatorApp.Models
 {
     public class InvoiceData
     {
-        private static List<FinalInvoice> _invoices = new List<FinalInvoice>();
+        private static List<Invoice> _invoices = new List<Invoice>();
 
-        public static void AddInvoice(FinalInvoice invoice)
+        public static void AddInvoice(Invoice invoiceData)
         {
-            _invoices.Add(invoice);
+            _invoices.Add(invoiceData);
         }
 
-        public static List<FinalInvoice> GetInvoices()
-        {
-            return _invoices;
-        }
+        public static List<Invoice> GetInvoices() => _invoices;
     }
 }

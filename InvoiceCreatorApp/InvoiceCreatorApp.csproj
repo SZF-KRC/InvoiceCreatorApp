@@ -70,10 +70,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\FinalInvoice.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\InvoiceData.cs" />
     <Compile Include="Models\InvoiceDocumentCreator.cs" />
     <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\MonthlyBalanceViewModel.cs" />

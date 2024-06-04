@@ -2,12 +2,9 @@
 using InvoiceCreatorApp.MVVM;
 using InvoiceCreatorApp.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows;
-using System.Windows.Documents;
 
 namespace InvoiceCreatorApp.ViewModels
 {
@@ -15,38 +12,25 @@ namespace InvoiceCreatorApp.ViewModels
     {
         Regex isdouble = new Regex(@"^-?\d+(\,\d+)?$");
         Regex isStreet = new Regex(@"^[A-Za-z]+(?:\s[A-Za-z0-9'_-]+)+$");
-        public ObservableCollection<Invoice> oneInvoice { get; set; }
-       
 
 
-        private string _companyName = "WPF Bau GesmbH";
-        private string _companyCity = "Guisberg";
-        private string _companyStreet = "Fensterstraße 12";
-        private string _companyPostalCode = "8788";
+        private Customer _customer = new Customer();
+        private Company _company = new Company();
 
+        private ObservableCollection<Product> _products = new ObservableCollection<Product>();
+        private Product _newProduct = new Product();
 
-        private string _customerNumber;
-        private string _customerName;
-        private string _customerCity;
-        private string _customerStreet;
-        private string _customerPostalCode;
+        //private double _totalTax;
+        //private double _finalPrice;
+        //private double _totalPrice;
 
-
-        private string _descriptionOfGoods;
-        private string _numberOfGoods;
-        private string _pricePerPiece;
-
-        private double _totalTax;
-        private double _finalPrice;
-        private double _totalPrice;
-
-        private Invoice _selectedItem;
+        private Product _selectedItem;
 
 
         /// <summary>
         /// Befehl zum Hinzufügen eines Postens zur Rechnung
         /// </summary>
-        public RelayCommand AddCommand => new RelayCommand(execute => AddOneItemToInvoice(), canExecute => CanAddInvoice());
+        public RelayCommand AddCommand => new RelayCommand(execute => AddProduct(), canExecute => CanAddProduct());
 
         /// <summary>
         /// Befehl zum Aktualisieren eines Postens in der Rechnung
@@ -65,184 +49,75 @@ namespace InvoiceCreatorApp.ViewModels
 
 
         public RelayCommand MonthlyBalanceCommand => new RelayCommand(execute => MonthlyBalanceSheet(), canExecute => CanMonthlyBalance());
-      
-        /// <summary>
-        /// Konstruktor für MainWindowViewModel
-        /// Initialisiert die Sammlung von Rechnungen
-        /// </summary>
-        public InvoiceViewModel()
+
+
+        public Company Company
         {
-            oneInvoice = new ObservableCollection<Invoice>();
+            get => _company;
+            set { _company = value; OnPropertyChanged(); }
+        }
+
+        public Customer Customer
+        {
+            get => _customer;
+            set { _customer = value; OnPropertyChanged(); }
+        }
+
+        public ObservableCollection<Product> Products
+        {
+            get => _products;
+            set { _products = value; OnPropertyChanged(); }
+        }
+
+        public Product NewProduct
+        {
+            get => _newProduct;
+            set { _newProduct = value; OnPropertyChanged(); }
         }
 
         /// <summary>
-        /// Firmenname der Rechnung
+        /// Ausgewähltes Rechnungsobjekt
         /// </summary>
-        public string CompanyName
+        public Product SelectedItem
         {
-            get => _companyName;
-            set{_companyName = value; OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Straße des Unternehmens
-        /// </summary>
-        public string CompanyStreet
-        {
-            get => _companyStreet;
-            set  {_companyStreet = value; OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Stadt des Unternehmens
-        /// </summary>
-        public string CompanyCity
-        {
-            get => _companyCity;
-            set { _companyCity = value; OnPropertyChanged(); } 
-        }
-
-        /// <summary>
-        /// Postleitzahl des Unternehmens
-        /// </summary>
-        public string CompanyPostalCode
-        {
-            get => _companyPostalCode;
-            set{ _companyPostalCode = value; OnPropertyChanged(); } 
-        }
-
-        /// <summary>
-        /// Kundennummer der Rechnung
-        /// </summary>
-        public string CustomerNumber
-        {
-            get => _customerNumber;
-            set{_customerNumber = value;OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Kundenname der Rechnung
-        /// </summary>
-        public string CustomerName
-        {
-            get => _customerName;
-            set{_customerName = value;OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Straße des Kunden
-        /// </summary
-        public string CustomerStreet
-        {
-            get => _customerStreet;
-            set { _customerStreet = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Stadt des Kunden
-        /// </summary>
-        public string CustomerCity
-        {
-            get => _customerCity;
-            set { _customerCity = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Postleitzahl des Kunden
-        /// </summary>
-        public string CustomerPostalCode
-        {
-            get =>_customerPostalCode;
-            set { _customerPostalCode = value; OnPropertyChanged();} 
-        }
-
-        /// <summary>
-        /// Warenbeschreibung der Rechnung
-        /// </summary>
-        public string DescriptionOfGoods
-        {
-            get => _descriptionOfGoods;
-            set{ _descriptionOfGoods = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Anzahl der Waren in der Rechnung
-        /// </summary>
-        public string NumberOfGoods
-        {
-            get => _numberOfGoods;
-            set{ _numberOfGoods = value;OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Preis pro Stück in der Rechnung
-        /// </summary>
-        public string PricePerPiece
-        {
-            get => _pricePerPiece;
-            set{_pricePerPiece = value; OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Gesamte Steuer der Rechnung
-        /// </summary>
-        public double TotalTax
-        {
-            get => _totalTax;
-            set{_totalTax = value; OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Gesamtpreis der Rechnung
-        /// </summary>
-        public double TotalPrice
-        {
-            get { return _totalPrice; }
-            set{_totalPrice = value;OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Endpreis der Rechnung
-        /// </summary>
-        public double FinalPrice
-        {
-            get => _finalPrice;
-            set{_finalPrice = value;OnPropertyChanged();}
-        }
-
-        /// <summary>
-        /// Fügt einen neuen Posten zur Rechnung hinzu
-        /// </summary>
-        private void AddOneItemToInvoice()
-        {
-            // Erstellt einen neuen Posten und setzt die Eigenschaften
-            var invoice = new Invoice
+            get => _selectedItem;
+            set
             {
-                CompanyName = CompanyName,
-                CompanyStreet = CompanyStreet,
-                CompanyCity = CompanyCity,
-                CompanyPostalCode = CompanyPostalCode,
+                _selectedItem = value;
+                OnPropertyChanged();
+                if (_selectedItem != null)
+                {
+                    NewProduct.Description = _selectedItem.Description;
+                    NewProduct.Quantity = _selectedItem.Quantity;
+                    NewProduct.PricePerUnit = _selectedItem.PricePerUnit;
+                }
+            }
+        }
 
-                CustomerName = CustomerName,
-                CustomerNumber = CustomerNumber,
-                CustomerStreet = CustomerStreet,
-                CustomerCity = CustomerCity,
-                CustomerPostalCode = CustomerPostalCode,
+        public double SubTotal => Products.Sum(price => price.TotalPrice);
+        public double VAT => SubTotal * 0.2;
+        public double Total => SubTotal + VAT;
 
-                Description = DescriptionOfGoods,
-                NumberOfGoods = NumberOfGoods,
-                PricePerPiece = PricePerPiece,
-                Position = oneInvoice.Count + 1,
-            };
-            oneInvoice.Add(invoice);// Fügt den neuen Posten zur Rechnungssammlung hinzu
-            UpdateInvoiceTotals();// Aktualisiert die Gesamtsummen der Rechnung
+
+        private void AddProduct()
+        {
+            Products.Add(new Product
+            {
+                Description = NewProduct.Description,
+                Quantity = NewProduct.Quantity,
+                PricePerUnit = NewProduct.PricePerUnit
+            });
+
+            UpdateInvoiceTotals();
+            NewProduct = new Product();
 
             // Setzt die Eingabefelder zurück
-            DescriptionOfGoods = string.Empty;
-            NumberOfGoods = string.Empty;
-            PricePerPiece = string.Empty;
+            ClearWindowItem();
             OnPropertyChanged();
+
         }
+
+
 
         /// <summary>
         /// Aktualisiert einen Posten in der Rechnung und die Gesamtsummen
@@ -252,24 +127,20 @@ namespace InvoiceCreatorApp.ViewModels
             if (SelectedItem != null)
             {
                 // Aktualisiert die Eigenschaften des ausgewählten Postens
-                SelectedItem.CustomerName = CustomerName;
-                SelectedItem.CustomerStreet = CustomerStreet;
-                SelectedItem.CustomerCity = CustomerCity;
-                SelectedItem.CustomerPostalCode = CustomerPostalCode;
-                
-                SelectedItem.Description = DescriptionOfGoods;
-                SelectedItem.NumberOfGoods = NumberOfGoods;
-                SelectedItem.PricePerPiece = PricePerPiece;
+
+
+
+                SelectedItem.Description = NewProduct.Description;
+                SelectedItem.Quantity = NewProduct.Quantity;
+                SelectedItem.PricePerUnit = NewProduct.PricePerUnit;
 
                 // Benachrichtigt die Benutzeroberfläche über die Änderungen in der Rechnungssammlung
-                OnPropertyChanged(nameof(oneInvoice));
+                OnPropertyChanged(nameof(Products));
                 SelectedItem = null;// Setzt den ausgewählten Posten zurück
                 UpdateInvoiceTotals();     // Aktualisiert die Gesamtsummen der Rechnung  
 
                 // Setzt die Eingabefelder zurück
-                DescriptionOfGoods = string.Empty;
-                NumberOfGoods = string.Empty;
-                PricePerPiece = string.Empty;
+                ClearWindowItem();
                 OnPropertyChanged();
             }
         }
@@ -279,9 +150,12 @@ namespace InvoiceCreatorApp.ViewModels
         /// </summary>
         private void DeleteOneItemInInvoice()
         {
-            oneInvoice.Remove(SelectedItem);// Entfernt den ausgewählten Posten aus der Rechnungssammlung
+
+            Products.Remove(SelectedItem);
+
             UpdateInvoiceTotals();// Aktualisiert die Gesamtsummen der Rechnung
             UpdatePositions();// Aktualisiert die Positionen der verbleibenden Posten
+            ClearWindowItem();
             OnPropertyChanged(); // Benachrichtigt die Benutzeroberfläche über die Änderungen
         }
 
@@ -291,64 +165,75 @@ namespace InvoiceCreatorApp.ViewModels
         private void SaveInvoice()
         {
             string invoiceNumber = Guid.NewGuid().ToString();
-            string currentTime = DateTime.Now.ToString("dd.MM.yyyy"); //CultureInfo.InvariantCulture
-            InvoiceDocumentCreator saveDocument = new InvoiceDocumentCreator();// Erstellt ein neues Dokument für die Rechnung
-            saveDocument.SaveInvoice(oneInvoice, invoiceNumber,currentTime, CustomerName, CustomerNumber, CustomerStreet, CustomerCity, CustomerPostalCode, CompanyName, CompanyStreet, CompanyCity, CompanyPostalCode);// Speichert das Rechnungsdokument
+            string currentTime = DateTime.Now.ToString("dd.MM.yyyy");
 
-            var finalInvoice = new FinalInvoice
-            {
-                CustomerName = CustomerName,
-                CustomerNum = CustomerNumber,
-                InvoiceNum = invoiceNumber,
-                CurrentTime = currentTime,
-                Tax = _totalTax,
-                Netto = _totalPrice,
-                FinalPrice = _finalPrice,
-                Items = new ObservableCollection<Invoice>(oneInvoice)
+            Invoice invoice = new Invoice()
+            {             
+                Company = new Company
+                {
+                    CompanyName = Company.CompanyName,
+                    CompanyStreet = Company.CompanyStreet,
+                    CompanyCity = Company.CompanyCity,
+                    CompanyPostCode = Company.CompanyPostCode,
+                },
+                Customer = new Customer
+                {
+                    CustomerName = Customer.CustomerName,
+                    CustomerNumber = Customer.CustomerNumber,
+                    CustomerStreet = Customer.CustomerStreet,
+                    CustomerCity = Customer.CustomerCity,
+                    CustomerPostCode = Customer.CustomerPostCode
+                },
+                Products = Products.ToList(),
+                DateOfIssue = currentTime,
+                InvoiceNumber = invoiceNumber,
+                
             };
 
-            InvoiceData.AddInvoice(finalInvoice);
+            InvoiceDocumentCreator saveDocument = new InvoiceDocumentCreator();// Erstellt ein neues Dokument für die Rechnung
+            saveDocument.SaveInvoice(invoice, Products);// Speichert das Rechnungsdokument
+            InvoiceData.AddInvoice(invoice);
 
-            oneInvoice.Clear();// Löscht alle Posten aus der aktuellen Rechnungssammlung
+            Products.Clear();// Löscht alle Posten aus der aktuellen Rechnungssammlung
             UpdateInvoiceTotals();// Aktualisiert die Gesamtsummen der Rechnung
         }
 
         /// <summary>
         /// Überprüft, ob ein Posten zur Rechnung hinzugefügt werden kann
         /// </summary>
-        private bool CanAddInvoice()
+        private bool CanAddProduct()
         {
-            return !string.IsNullOrWhiteSpace(CustomerName) &&
-                   CustomerName.Length > 3 &&
+            return !string.IsNullOrWhiteSpace(Customer.CustomerName) &&
+                   Customer.CustomerName.Length > 3 &&
 
-                   !string.IsNullOrWhiteSpace(CustomerStreet) &&
-                   CustomerStreet.Length > 3 &&
-                   isStreet.IsMatch(CustomerStreet) &&
+                   !string.IsNullOrWhiteSpace(Customer.CustomerStreet) &&
+                   Customer.CustomerStreet.Length > 3 &&
+                   isStreet.IsMatch(Customer.CustomerStreet) &&
 
-                   !string.IsNullOrWhiteSpace(CustomerCity) &&
-                   CustomerCity.Length > 3 &&
-                   CustomerCity.All(char.IsLetter) &&
+                   !string.IsNullOrWhiteSpace(Customer.CustomerCity) &&
+                   Customer.CustomerCity.Length > 3 &&
+                   Customer.CustomerCity.All(char.IsLetter) &&
 
-                   !string.IsNullOrWhiteSpace(CustomerPostalCode) &&
-                   CustomerPostalCode.Length > 3 &&
-                   CustomerPostalCode.All(char.IsDigit) &&
+                   !string.IsNullOrWhiteSpace(Customer.CustomerPostCode) &&
+                   Customer.CustomerPostCode.Length > 3 &&
+                   Customer.CustomerPostCode.All(char.IsDigit) &&
 
-                  !string.IsNullOrWhiteSpace(CustomerNumber) &&
-                  CustomerNumber.Length > 3 &&
-                  CustomerNumber.All(char.IsDigit) &&
+                  !string.IsNullOrWhiteSpace(Customer.CustomerNumber) &&
+                  Customer.CustomerNumber.Length > 3 &&
+                  Customer.CustomerNumber.All(char.IsDigit) &&
 
-                  !string.IsNullOrWhiteSpace(DescriptionOfGoods) &&
-                  DescriptionOfGoods.Length > 2 &&
+                  !string.IsNullOrWhiteSpace(NewProduct.Description) &&
+                  NewProduct.Description.Length > 2 &&
 
-                  !string.IsNullOrWhiteSpace(NumberOfGoods) &&
-                  NumberOfGoods.Length > 0 &&
-                  NumberOfGoods.Length < 3 &&
-                  NumberOfGoods.All(char.IsDigit) &&
+                  !string.IsNullOrWhiteSpace(NewProduct.Quantity) &&
+                  NewProduct.Quantity.Length > 0 &&
+                  NewProduct.Quantity.Length < 3 &&
+                  NewProduct.Quantity.All(char.IsDigit) &&
 
-                  !string.IsNullOrWhiteSpace(PricePerPiece) &&
-                  PricePerPiece.Length > 0 &&
-                  PricePerPiece.Length < 9 &&
-                  isdouble.IsMatch(PricePerPiece);
+                  !string.IsNullOrWhiteSpace(NewProduct.PricePerUnit) &&
+                  NewProduct.PricePerUnit.Length > 0 &&
+                  NewProduct.PricePerUnit.Length < 9 &&
+                  isdouble.IsMatch(NewProduct.PricePerUnit);
         }
 
         /// <summary>
@@ -357,25 +242,25 @@ namespace InvoiceCreatorApp.ViewModels
         private bool CanSaveInvoice()
         {
             // Überprüft, ob die notwendigen Felder ausgefüllt sind und ob es Posten in der Rechnung gibt
-            return !string.IsNullOrWhiteSpace(CustomerName) &&
-                   CustomerName.Length > 3 &&
+            return !string.IsNullOrWhiteSpace(Customer.CustomerName) &&
+                   Customer.CustomerName.Length > 3 &&
 
-                   !string.IsNullOrWhiteSpace(CustomerStreet) &&
-                   CustomerStreet.Length > 3 &&
-                   isStreet.IsMatch(CustomerStreet) &&
+                   !string.IsNullOrWhiteSpace(Customer.CustomerStreet) &&
+                   Customer.CustomerStreet.Length > 3 &&
+                   isStreet.IsMatch(Customer.CustomerStreet) &&
 
-                   !string.IsNullOrWhiteSpace(CustomerCity) &&
-                   CustomerCity.Length > 3 &&
-                   CustomerCity.All(char.IsLetter) &&
+                   !string.IsNullOrWhiteSpace(Customer.CustomerCity) &&
+                   Customer.CustomerCity.Length > 3 &&
+                   Customer.CustomerCity.All(char.IsLetter) &&
 
-                   !string.IsNullOrWhiteSpace(CustomerPostalCode) &&
-                   CustomerPostalCode.Length > 3 &&
-                   CustomerPostalCode.All(char.IsDigit) &&
+                   !string.IsNullOrWhiteSpace(Customer.CustomerPostCode) &&
+                   Customer.CustomerPostCode.Length > 3 &&
+                   Customer.CustomerPostCode.All(char.IsDigit) &&
 
-                  !string.IsNullOrWhiteSpace(CustomerNumber) &&
-                  CustomerNumber.Length > 3 &&
-                  CustomerNumber.All(char.IsDigit)
-                  && oneInvoice.Count != 0;
+                  !string.IsNullOrWhiteSpace(Customer.CustomerNumber) &&
+                  Customer.CustomerNumber.Length > 3 &&
+                  Customer.CustomerNumber.All(char.IsDigit)
+                  && Products.Count != 0;
         }
 
         /// <summary>
@@ -383,39 +268,15 @@ namespace InvoiceCreatorApp.ViewModels
         /// </summary>
         private bool CanUpdateInvoice()
         {
-            return CanAddInvoice() && SelectedItem != null;
+            return CanAddProduct() && SelectedItem != null;
         }
 
         private bool CanMonthlyBalance()
         {
-
             return InvoiceData.GetInvoices().Count > 0;
         }
 
-        /// <summary>
-        /// Ausgewähltes Rechnungsobjekt
-        /// </summary>
-        public Invoice SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                _selectedItem = value;
-                OnPropertyChanged();
 
-                if (_selectedItem != null)
-                {
-                    DescriptionOfGoods = _selectedItem.Description;
-                    NumberOfGoods = _selectedItem.NumberOfGoods;
-                    PricePerPiece = _selectedItem.PricePerPiece;
-                    CustomerName = _selectedItem.CustomerName;
-                    CustomerNumber = _selectedItem.CustomerNumber;
-                    CustomerStreet = _selectedItem.CustomerStreet;
-                    CustomerCity = _selectedItem.CustomerCity;
-                    CustomerPostalCode = _selectedItem.CustomerPostalCode;
-                }
-            }
-        }
 
         private void MonthlyBalanceSheet()
         {
@@ -424,7 +285,12 @@ namespace InvoiceCreatorApp.ViewModels
             monthlyBalanceView.Show();
         }
 
-       
+        private void ClearWindowItem()
+        {
+            NewProduct.Description = string.Empty;
+            NewProduct.Quantity = string.Empty;
+            NewProduct.PricePerUnit = string.Empty;
+        }
 
         /// <summary>
         /// Aktualisiert die Gesamtsummen der Rechnung
@@ -432,9 +298,9 @@ namespace InvoiceCreatorApp.ViewModels
         private void UpdateInvoiceTotals()
         {
             // Berechnet die Gesamtsummen der Steuern, des Endpreises und des Gesamtpreises
-            TotalTax = oneInvoice.Sum(i => i.CalculationTax());
-            FinalPrice = oneInvoice.Sum(i => i.CalculationFinalPrice());
-            TotalPrice = oneInvoice.Sum(i => i.TotalPrice());
+            OnPropertyChanged(nameof(SubTotal));
+            OnPropertyChanged(nameof(VAT));
+            OnPropertyChanged(nameof(Total));
         }
 
         /// <summary>
@@ -443,9 +309,9 @@ namespace InvoiceCreatorApp.ViewModels
         private void UpdatePositions()
         {
             // Setzt die Positionen der Posten basierend auf ihrer Reihenfolge in der Sammlung
-            for (int i = 0; i < oneInvoice.Count; i++)
+            for (int i = 0; i < Products.Count; i++)
             {
-                oneInvoice[i].Position = i + 1;
+                Products[i].Position = i + 1;
             }
         }
     }
