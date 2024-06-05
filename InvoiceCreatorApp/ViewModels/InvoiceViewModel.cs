@@ -114,6 +114,7 @@ namespace InvoiceCreatorApp.ViewModels
             // Setzt die Eingabefelder zurück
             ClearWindowItem();
             OnPropertyChanged();
+            UpdatePositions();
 
         }
 
@@ -142,6 +143,7 @@ namespace InvoiceCreatorApp.ViewModels
                 // Setzt die Eingabefelder zurück
                 ClearWindowItem();
                 OnPropertyChanged();
+                UpdatePositions();
             }
         }
 
@@ -164,8 +166,10 @@ namespace InvoiceCreatorApp.ViewModels
         /// </summary>
         private void SaveInvoice()
         {
-            string invoiceNumber = Guid.NewGuid().ToString();
-            string currentTime = DateTime.Now.ToString("dd.MM.yyyy");
+            Random random = new Random();
+            string invoiceNumber = random.Next(1000, 9999).ToString();
+            DateTime issueDate = DateTime.Today.Date.AddDays(-random.Next(1, 120));
+            DateTime ddd = DateTime.Now.Date.Date;
 
             Invoice invoice = new Invoice()
             {             
@@ -185,7 +189,7 @@ namespace InvoiceCreatorApp.ViewModels
                     CustomerPostCode = Customer.CustomerPostCode
                 },
                 Products = Products.ToList(),
-                DateOfIssue = currentTime,
+                DateOfIssue = issueDate,
                 InvoiceNumber = invoiceNumber,
                 
             };
@@ -193,9 +197,38 @@ namespace InvoiceCreatorApp.ViewModels
             InvoiceDocumentCreator saveDocument = new InvoiceDocumentCreator();// Erstellt ein neues Dokument für die Rechnung
             saveDocument.SaveInvoice(invoice, Products);// Speichert das Rechnungsdokument
             InvoiceData.AddInvoice(invoice);
+            
 
             Products.Clear();// Löscht alle Posten aus der aktuellen Rechnungssammlung
+            ClearWinodowAll();
             UpdateInvoiceTotals();// Aktualisiert die Gesamtsummen der Rechnung
+        }
+
+        private void RandomExpenses()
+        {
+            Random random = new Random();
+            int count = 20;
+            for (int i = 0; i < count; i++)
+            {
+                // zufällige Werte für Ausgaben
+                string expenseNumber = $"{i + 1000}";
+                DateTime issueDate = DateTime.Today.Date.AddDays(-random.Next(1, 120));
+                string companyName = $"Company {i + 1}";
+                double netto = random.Next(0, 1001);
+                double vat = netto * 0.2; // 20% Tax
+                double total = netto + vat;
+
+                Expense expense = new Expense()
+                {
+                    CompanyName = companyName,
+                    IssueDate = issueDate,
+                    ExpenseNumber = expenseNumber,
+                    VAT = vat,
+                    Total = total,
+                    Netto = netto,
+                };
+                ExampleExpenseData.AddRandomExpenses(expense);
+            }
         }
 
         /// <summary>
@@ -227,7 +260,7 @@ namespace InvoiceCreatorApp.ViewModels
 
                   !string.IsNullOrWhiteSpace(NewProduct.Quantity) &&
                   NewProduct.Quantity.Length > 0 &&
-                  NewProduct.Quantity.Length < 3 &&
+                  NewProduct.Quantity.Length < 5 &&
                   NewProduct.Quantity.All(char.IsDigit) &&
 
                   !string.IsNullOrWhiteSpace(NewProduct.PricePerUnit) &&
@@ -280,6 +313,7 @@ namespace InvoiceCreatorApp.ViewModels
 
         private void MonthlyBalanceSheet()
         {
+            RandomExpenses();
             MonthlyBalanceView monthlyBalanceView = new MonthlyBalanceView();
             monthlyBalanceView.DataContext = new MonthlyBalanceViewModel();
             monthlyBalanceView.Show();
@@ -290,6 +324,16 @@ namespace InvoiceCreatorApp.ViewModels
             NewProduct.Description = string.Empty;
             NewProduct.Quantity = string.Empty;
             NewProduct.PricePerUnit = string.Empty;
+        }
+
+        private void ClearWinodowAll()
+        {
+            ClearWindowItem();
+            Customer.CustomerName = string.Empty;
+            Customer.CustomerNumber = string.Empty;
+            Customer.CustomerStreet = string.Empty;
+            Customer.CustomerCity = string.Empty;
+            Customer.CustomerPostCode = string.Empty;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace InvoiceCreatorApp.Models
@@ -9,7 +10,7 @@ namespace InvoiceCreatorApp.Models
         public Customer Customer { get; set; }
         public List<Product> Products { get; set; } = new List<Product>();
 
-        public string DateOfIssue { get; set; }
+        public DateTime DateOfIssue { get; set; }
         public string InvoiceNumber { get; set; }
 
         public double Subtotal => Products.Sum(p => p.TotalPrice);

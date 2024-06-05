@@ -72,6 +72,8 @@
     </ApplicationDefinition>
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\ExampleExpenseData.cs" />
+    <Compile Include="Models\Expense.cs" />
     <Compile Include="Models\InvoiceData.cs" />
     <Compile Include="Models\InvoiceDocumentCreator.cs" />
     <Compile Include="Models\Invoice.cs" />
