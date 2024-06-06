@@ -10,8 +10,8 @@ namespace InvoiceCreatorApp.ViewModels
 {
     public class InvoiceViewModel : ViewModelBase
     {
-        Regex isdouble = new Regex(@"^-?\d+(\,\d+)?$");
-        Regex isStreet = new Regex(@"^[A-Za-z]+(?:\s[A-Za-z0-9'_-]+)+$");
+        Regex isdouble = new Regex(@"^-?\d+(\,\d+)?$");// Regex für die Validierung von Double-Werten
+        Regex isStreet = new Regex(@"^[A-Za-z]+(?:\s[A-Za-z0-9'_-]+)+$");// Regex für die Validierung von Straßennamen
 
 
         private Customer _customer = new Customer();
@@ -47,28 +47,41 @@ namespace InvoiceCreatorApp.ViewModels
         /// </summary>
         public RelayCommand SaveCommand => new RelayCommand(execute => SaveInvoice(), canExecute => CanSaveInvoice());
 
-
+        /// <summary>
+        /// Befehl zum Erstellen einer monatlichen Bilanz
+        /// </summary>
         public RelayCommand MonthlyBalanceCommand => new RelayCommand(execute => MonthlyBalanceSheet(), canExecute => CanMonthlyBalance());
 
-
+        /// <summary>
+        /// Firma der Rechnung
+        /// </summary>
         public Company Company
         {
             get => _company;
             set { _company = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Kunde der Rechnung
+        /// </summary>
         public Customer Customer
         {
             get => _customer;
             set { _customer = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Produkte der Rechnung
+        /// </summary>
         public ObservableCollection<Product> Products
         {
             get => _products;
             set { _products = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Neues Produkt, das zur Rechnung hinzugefügt werden soll
+        /// </summary>
         public Product NewProduct
         {
             get => _newProduct;
@@ -94,11 +107,25 @@ namespace InvoiceCreatorApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// Zwischensumme der Rechnung
+        /// </summary>
         public double SubTotal => Products.Sum(price => price.TotalPrice);
+
+        /// <summary>
+        /// Mehrwertsteuer der Rechnung
+        /// </summary>
         public double VAT => SubTotal * 0.2;
+
+        /// <summary>
+        /// Gesamtsumme der Rechnung
+        /// </summary>
         public double Total => SubTotal + VAT;
 
 
+        /// <summary>
+        /// Fügt ein Produkt zur Rechnung hinzu
+        /// </summary>
         private void AddProduct()
         {
             Products.Add(new Product
@@ -128,9 +155,6 @@ namespace InvoiceCreatorApp.ViewModels
             if (SelectedItem != null)
             {
                 // Aktualisiert die Eigenschaften des ausgewählten Postens
-
-
-
                 SelectedItem.Description = NewProduct.Description;
                 SelectedItem.Quantity = NewProduct.Quantity;
                 SelectedItem.PricePerUnit = NewProduct.PricePerUnit;
@@ -204,6 +228,9 @@ namespace InvoiceCreatorApp.ViewModels
             UpdateInvoiceTotals();// Aktualisiert die Gesamtsummen der Rechnung
         }
 
+        /// <summary>
+        /// Generiert zufällige Ausgaben für die monatliche Bilanz
+        /// </summary>
         private void RandomExpenses()
         {
             Random random = new Random();
@@ -301,24 +328,32 @@ namespace InvoiceCreatorApp.ViewModels
         /// </summary>
         private bool CanUpdateInvoice()
         {
-            return CanAddProduct() && SelectedItem != null;
+            return CanAddProduct() && SelectedItem != null;// Überprüft, ob ein Produkt hinzugefügt werden kann und ob ein Posten ausgewählt ist
         }
 
+        /// <summary>
+        /// Überprüft, ob eine monatliche Bilanz erstellt werden kann
+        /// </summary>
         private bool CanMonthlyBalance()
         {
             return InvoiceData.GetInvoices().Count > 0;
         }
 
 
-
+        /// <summary>
+        /// Erstellt eine monatliche Bilanz und zeigt sie an
+        /// </summary>
         private void MonthlyBalanceSheet()
         {
-            RandomExpenses();
+            RandomExpenses();// Generiert zufällige Ausgaben
             MonthlyBalanceView monthlyBalanceView = new MonthlyBalanceView();
             monthlyBalanceView.DataContext = new MonthlyBalanceViewModel();
             monthlyBalanceView.Show();
         }
 
+        /// <summary>
+        /// Setzt die Eingabefelder für ein Produkt zurück
+        /// </summary>
         private void ClearWindowItem()
         {
             NewProduct.Description = string.Empty;
@@ -326,6 +361,9 @@ namespace InvoiceCreatorApp.ViewModels
             NewProduct.PricePerUnit = string.Empty;
         }
 
+        /// <summary>
+        /// Setzt alle Eingabefelder für das Formular zurück
+        /// </summary>
         private void ClearWinodowAll()
         {
             ClearWindowItem();
